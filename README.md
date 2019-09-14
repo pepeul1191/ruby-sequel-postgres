@@ -1,5 +1,12 @@
 # CSV a Postgres
 
+
+Backups
+
+
+    $ sudo -u postgres pg_dump local > local.bak
+    $ sudo -u postgres psql local < local.bak
+
 ---
 
 Fuentes:
