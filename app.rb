@@ -52,4 +52,40 @@ def insert_carrers
   end
 end
 
-insert_carrers
+# insert_carrers
+
+def insert_teachers
+  teachers = []
+  CSV.foreach(
+    'data/teachers.csv',
+    quote_char: '"',
+    col_sep: '|',
+    row_sep: :auto,
+    headers: true,
+  ) do |row|
+    t = Hash.new
+    t[:id] = row['id']
+    t[:names] = row['names']
+    t[:last_names] = row['last_names']
+    t[:img] = row['img']
+    teachers.push(t)
+  end
+  DB.transaction do
+    begin
+      # inserts
+      teachers.each do |teacher|
+        n = Teacher.new(
+          :names => teacher[:names],
+          :last_names => teacher[:last_names],
+          :img => teacher[:img],
+        )
+        n.save
+      end
+    rescue Exception => e
+      Sequel::Rollback
+      puts e
+    end
+  end
+end
+
+insert_teachers
